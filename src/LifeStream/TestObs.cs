@@ -32,7 +32,7 @@ namespace LifeStream
             var limit = duration * freq;
             for (int i = 0; i < limit; i++)
             {
-                var sig = new Signal(this.counter, this.counter);
+                var sig = new Signal(this.counter, this.counter, this.counter, this.counter, this.counter, this.counter); //is this correct
                 data.Add(StreamEvent.CreateInterval(sig.ts, sig.ts + (1000 / freq), sig));
                 this.counter += (1000 / freq);
             }
