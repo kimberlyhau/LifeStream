@@ -86,12 +86,7 @@ namespace Microsoft.StreamProcessing
             this FOperation<Signal> source,
             long period,
             long gap_tol,
-            float val,
-            float val2, //added more val
-            float val3,
-            float val4,
-            float val5
-                
+            float val
         )
         {
             void FillConstSelector(long t, Signal s, out Signal o)
@@ -104,10 +99,10 @@ namespace Microsoft.StreamProcessing
                 {
                     o.ts = t;
                     o.val = val;
-                    o.val2 = val2; 
-                    o.val3 = val3;
-                    o.val4 = val4;
-                    o.val5 = val5;
+                    o.val2 = val; //need to add more val
+                    o.val3 = val;
+                    o.val4 = val;
+                    o.val5 = val;
                 }
             }
 
