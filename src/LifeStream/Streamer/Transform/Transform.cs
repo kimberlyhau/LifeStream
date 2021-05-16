@@ -77,13 +77,13 @@ namespace Microsoft.StreamProcessing
             this IStreamable<Empty, Signal> source,
             long period,
             long gap_tol,
-            float val,float val2,float val3,float val4,float val5,
+            float val,
             long offset = 0)
         {
             return source
                     .Chop(offset, period, gap_tol)
-                    .Select((t, s) => (t == s.ts) ? s : new Signal(t, val, val2, val3, val4, val5))
-                ; 
+                    .Select((t, s) => (t == s.ts) ? s : new Signal(t, val, val, val, val, val))
+                ; //for Select => fields val1 to val5 have same value
         }
 
         /// <summary>
