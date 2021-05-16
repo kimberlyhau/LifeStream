@@ -28,10 +28,7 @@ namespace Microsoft.StreamProcessing
         {
             o.ts = t;
             o.val = ((p.e.val - p.s.val) * (t - p.s.ts) / (p.e.ts - p.s.ts) + p.s.val);
-            o.val2 = ((p.e.val2 - p.s.val2) * (t - p.s.ts) / (p.e.ts - p.s.ts) + p.s.val2); 
-            o.val3 = ((p.e.val3 - p.s.val3) * (t - p.s.ts) / (p.e.ts - p.s.ts) + p.s.val3);
-            o.val4 = ((p.e.val4 - p.s.val4) * (t - p.s.ts) / (p.e.ts - p.s.ts) + p.s.val4);
-            o.val5 = ((p.e.val5 - p.s.val5) * (t - p.s.ts) / (p.e.ts - p.s.ts) + p.s.val5);
+            
         }
 
         public static FOperation<Signal> Resample(
@@ -54,10 +51,6 @@ namespace Microsoft.StreamProcessing
         {
             o.ts = signal.ts;
             o.val = ((signal.val - agg.avg) / agg.std);
-            o.val2 = ((signal.val2 - agg.avg) / agg.std);
-            o.val3 = ((signal.val3 - agg.avg) / agg.std);
-            o.val4 = ((signal.val4 - agg.avg) / agg.std);
-            o.val5 = ((signal.val5 - agg.avg) / agg.std);
         }
 
         public static FOperation<Signal> Normalize(
@@ -123,17 +116,25 @@ namespace Microsoft.StreamProcessing
         {
             public Signal signal;
             public float avg;
+            public float avg2;
+            public float avg3;
+            public float avg4;
+            public float avg5;
 
             public override string ToString()
             {
-                return $"{nameof(signal)}: {signal}, {nameof(avg)}: {avg}";
+                return $"{nameof(signal)}: {signal}, {nameof(avg)}: {avg}, {nameof(avg2)}: {avg2}, {nameof(avg3)}: {avg3}, {nameof(avg4)}: {avg4}, {nameof(avg5)}: {avg5}";
             }
         }
 
-        internal static void FillMeanJoiner(Signal signal, float avg, out SignalAvg o)
+        internal static void FillMeanJoiner(Signal signal,float avg, float avg2, float avg3, float avg4, float avg5, out SignalAvg o)
         {
             o.signal = signal;
             o.avg = avg;
+            o.avg2 = avg2;
+            o.avg3 = avg3;
+            o.avg4 = avg4;
+            o.avg5 = avg5;
         }
 
         internal static void FillMeanSelector(long t, SignalAvg s, out Signal o)
@@ -146,10 +147,10 @@ namespace Microsoft.StreamProcessing
             {
                 o.ts = t;
                 o.val = s.avg;
-                o.val2 = s.avg; //need to avg the other fields?
-                o.val3 = s.avg;
-                o.val4 = s.avg;
-                o.val5 = s.avg;
+                o.val2 = s.avg2; //need to avg the other fields?
+                o.val3 = s.avg3;
+                o.val4 = s.avg4;
+                o.val5 = s.avg5;
             }
         }
 

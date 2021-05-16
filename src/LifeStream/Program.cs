@@ -204,14 +204,14 @@ namespace LifeStream
                 case "fillconst_trill":
                     time = NonFuseTest(data, stream =>
                         stream
-                            .FillConst(period, gap_tol, 0)
+                            .FillConst(period, gap_tol, 0,0,0,0,0)
                     );
                     break;
                 case "fillconst_lifestream":
                     Config.FuseFactor = (int) (window / period);
                     time = FuseTest(data, stream =>
                         stream
-                            .FillConst(period, gap_tol, 0)
+                            .FillConst(period, gap_tol, 0,0,0,0,0)
                     );
                     break;
                 case "fillmean_trill":
