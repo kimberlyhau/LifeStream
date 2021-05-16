@@ -28,10 +28,6 @@ namespace Microsoft.StreamProcessing
         {
             o.ts = t;
             o.val = ((p.e.val - p.s.val) * (t - p.s.ts) / (p.e.ts - p.s.ts) + p.s.val);
-            o.val2 = ((p.e.val2 - p.s.val2) * (t - p.s.ts) / (p.e.ts - p.s.ts) + p.s.val2); 
-            o.val3 = ((p.e.val3 - p.s.val3) * (t - p.s.ts) / (p.e.ts - p.s.ts) + p.s.val3);
-            o.val4 = ((p.e.val4 - p.s.val4) * (t - p.s.ts) / (p.e.ts - p.s.ts) + p.s.val4);
-            o.val5 = ((p.e.val5 - p.s.val5) * (t - p.s.ts) / (p.e.ts - p.s.ts) + p.s.val5);
         }
 
         public static FOperation<Signal> Resample(
@@ -54,10 +50,6 @@ namespace Microsoft.StreamProcessing
         {
             o.ts = signal.ts;
             o.val = ((signal.val - agg.avg) / agg.std);
-            o.val2 = ((signal.val2 - agg.avg) / agg.std);
-            o.val3 = ((signal.val3 - agg.avg) / agg.std);
-            o.val4 = ((signal.val4 - agg.avg) / agg.std);
-            o.val5 = ((signal.val5 - agg.avg) / agg.std);
         }
 
         public static FOperation<Signal> Normalize(
@@ -99,10 +91,6 @@ namespace Microsoft.StreamProcessing
                 {
                     o.ts = t;
                     o.val = val;
-                    o.val2 = val; //need to add more val
-                    o.val3 = val;
-                    o.val4 = val;
-                    o.val5 = val;
                 }
             }
 
@@ -141,10 +129,6 @@ namespace Microsoft.StreamProcessing
             {
                 o.ts = t;
                 o.val = s.avg;
-                o.val2 = s.avg; //need to avg the other fields?
-                o.val3 = s.avg;
-                o.val4 = s.avg;
-                o.val5 = s.avg;
             }
         }
 

@@ -32,9 +32,8 @@ namespace Microsoft.StreamProcessing
                     .Chop(offset, operiod)
                     .HoppingWindowLifetime(1, operiod)
                     .AlterEventDuration(operiod)
-                    .Select((t, e) => new Signal(t, ((e.ev - e.sv) * (t - e.st) / (e.et - e.st) + e.sv),((e.ev - e.sv) * (t - e.st) / (e.et - e.st) + e.sv),
-                        ((e.ev - e.sv) * (t - e.st) / (e.et - e.st) + e.sv),((e.ev - e.sv) * (t - e.st) / (e.et - e.st) + e.sv),((e.ev - e.sv) * (t - e.st) / (e.et - e.st) + e.sv)))
-                ; //for Select => fields val1 to val5 have same value
+                    .Select((t, e) => new Signal(t, ((e.ev - e.sv) * (t - e.st) / (e.et - e.st) + e.sv)))
+                ;
         }
 
         /// <summary>
@@ -57,8 +56,7 @@ namespace Microsoft.StreamProcessing
                             (avg, std) => new {avg, std}
                         ),
                         (signal, agg) =>
-                            new Signal(signal.ts, (float) ((signal.val - agg.avg) / agg.std), (float) ((signal.val2 - agg.avg) / agg.std), 
-                                (float) ((signal.val3 - agg.avg) / agg.std), (float) ((signal.val4 - agg.avg) / agg.std), (float) ((signal.val5 - agg.avg) / agg.std)),
+                            new Signal(signal.ts, (float) ((signal.val - agg.avg) / agg.std)),
                         window, window, window - 1
                     )
                 ;
@@ -82,8 +80,8 @@ namespace Microsoft.StreamProcessing
         {
             return source
                     .Chop(offset, period, gap_tol)
-                    .Select((t, s) => (t == s.ts) ? s : new Signal(t, val, val, val, val, val))
-                ; //for Select => fields val1 to val5 have same value
+                    .Select((t, s) => (t == s.ts) ? s : new Signal(t, val))
+                ;
         }
 
         /// <summary>
@@ -113,7 +111,7 @@ namespace Microsoft.StreamProcessing
                     .Select(e =>
                         (e.signal.ts == e.new_ts)
                             ? e.signal
-                            : new Signal(e.new_ts, e.avg, e.avg, e.avg, e.avg, e.avg)) //fields val1 to val5 have same value
+                            : new Signal(e.new_ts, e.avg))
                     .AlterEventDuration(period)
                 ;
         }
@@ -151,7 +149,7 @@ namespace Microsoft.StreamProcessing
             var new_val = bp.ProcessSamples(ival);
             for (int k = 0; k < new_val.Length; k++)
             {
-                output.Add(new Signal(input[k].ts, (float) new_val[k],(float) new_val[k],(float) new_val[k],(float) new_val[k],(float) new_val[k])); //fields val1 to val5 have same value
+                output.Add(new Signal(input[k].ts, (float) new_val[k]));
             }
 
             return output;
