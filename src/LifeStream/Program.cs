@@ -132,9 +132,9 @@ namespace LifeStream
             Config.StreamScheduler = StreamScheduler.OwnedThreads(2);
             Config.ForceRowBasedExecution = true;
 
-            int duration = Int32.Parse(args[0]);
-            var testcase = args[1].ToLower();
-            var engine = args[2].ToLower();
+            int duration = 100000;
+            var testcase = "passfilter"; //normalize, passfilter, fillconst, fillmean, resample, endtoend
+            var engine = "trill";
             double time = 0;
 
             const int start = 0;

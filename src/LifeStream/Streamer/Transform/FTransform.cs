@@ -7,6 +7,7 @@ namespace Microsoft.StreamProcessing
 {
     public static class FStreamable
     {
+        public static int size = 5;
         public struct SigPair
         {
             public Signal s;
@@ -27,7 +28,14 @@ namespace Microsoft.StreamProcessing
         internal static void ResampleSelector(long t, SigPair p, out Signal o)
         {
             o.ts = t;
-            o.val = ((p.e.val - p.s.val) * (t - p.s.ts) / (p.e.ts - p.s.ts) + p.s.val);
+            float val = ((p.e.val - p.s.val) * (t - p.s.ts) / (p.e.ts - p.s.ts) + p.s.val);
+            o.val = val;
+            float[] values = new float [size];
+            for (int i =0; i<size; i++)
+            {
+                values[i] = val;
+            }
+            o.vals = values;
         }
 
         public static FOperation<Signal> Resample(
@@ -49,7 +57,14 @@ namespace Microsoft.StreamProcessing
         internal static void NormalizeJoiner(Signal signal, (float avg, float std) agg, out Signal o)
         {
             o.ts = signal.ts;
-            o.val = ((signal.val - agg.avg) / agg.std);
+            float val = ((signal.val - agg.avg) / agg.std);
+            o.val = val;
+            float[] values = new float [size];
+            for (int i =0; i<size; i++)
+            {
+                values[i] = val;
+            }
+            o.vals = values;
         }
 
         public static FOperation<Signal> Normalize(
@@ -91,6 +106,12 @@ namespace Microsoft.StreamProcessing
                 {
                     o.ts = t;
                     o.val = val;
+                    float[] values = new float [size];
+                    for (int i =0; i<size; i++)
+                    {
+                        values[i] = val;
+                    }
+                    o.vals = values;
                 }
             }
 
@@ -129,6 +150,13 @@ namespace Microsoft.StreamProcessing
             {
                 o.ts = t;
                 o.val = s.avg;
+                float val = s.avg;
+                float[] values = new float [size];
+                for (int i =0; i<size; i++)
+                {
+                    values[i] = val;
+                }
+                o.vals = values;
             }
         }
 
