@@ -133,7 +133,7 @@ namespace LifeStream
             Config.ForceRowBasedExecution = true;
 
             int duration = 100000;
-            var testcase = "passfilter"; //normalize, passfilter, fillconst, fillmean, resample, endtoend
+            var testcase = "normalize"; //normalize, passfilter, fillconst, fillmean, resample, endtoend
             var engine = "trill";
             double time = 0;
 

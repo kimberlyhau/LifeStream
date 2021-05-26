@@ -7,21 +7,21 @@ namespace Streamer.Ingest
     {
         public long ts;
         public float val;
-        public float[] vals;
+        public float val2;
+        public float val3;
+        public float val4;
+        public float val5;
         
 
         public Signal(long ts, float val)
         {
             this.ts = ts;
             this.val = val;
+            this.val2 = val;
+            this.val3 = val;
+            this.val4 = val;
+            this.val5 = val;
             
-            int size = 5;
-            float[] values = new float [size];
-            for (int i =0; i<size; i++)
-            {
-                values[i] = val;
-            }
-            this.vals = values;
         }
 
         public int CompareTo(Signal other)

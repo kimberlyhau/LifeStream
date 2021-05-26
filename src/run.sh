@@ -19,17 +19,19 @@ function run_e2ebench {
     rm -f $OUTPUT_FILE
     echo "End-to-end benchmark on $ENGINE"
     echo "Data size(million events),Time(sec)"
-    for dur in "${E2E_BENCHS[@]}"; do
-        ./run_bench.sh $dur $ENGINE endtoend | awk '{print $6 "," $10}' | tee -a $OUTPUT_FILE
-    done
+#    for dur in "${E2E_BENCHS[@]}"; do
+#        ./run_bench.sh $dur $ENGINE endtoend | awk '{print $6 "," $10}' | tee -a $OUTPUT_FILE
+#    done
+    ./run_bench.sh 60000 $ENGINE endtoend | awk '{print $6 "," $10}' | tee -a $OUTPUT_FILE
+
     echo ""
 }
 
 run_opbench trill
-run_opbench numlib
-run_opbench lifestream
+#run_opbench numlib
+#run_opbench lifestream
 run_e2ebench trill
-run_e2ebench numlib
-run_e2ebench lifestream
+#run_e2ebench numlib
+#run_e2ebench lifestream
 
-./plot.sh
+#./plot.sh

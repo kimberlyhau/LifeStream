@@ -7,7 +7,7 @@ namespace Microsoft.StreamProcessing
 {
     public static class FStreamable
     {
-        public static int size = 5;
+       
         public struct SigPair
         {
             public Signal s;
@@ -30,12 +30,11 @@ namespace Microsoft.StreamProcessing
             o.ts = t;
             float val = ((p.e.val - p.s.val) * (t - p.s.ts) / (p.e.ts - p.s.ts) + p.s.val);
             o.val = val;
-            float[] values = new float [size];
-            for (int i =0; i<size; i++)
-            {
-                values[i] = val;
-            }
-            o.vals = values;
+            o.val2 = val;
+            o.val3 = val;
+            o.val4 = val;
+            o.val5 = val;
+            
         }
 
         public static FOperation<Signal> Resample(
@@ -59,12 +58,10 @@ namespace Microsoft.StreamProcessing
             o.ts = signal.ts;
             float val = ((signal.val - agg.avg) / agg.std);
             o.val = val;
-            float[] values = new float [size];
-            for (int i =0; i<size; i++)
-            {
-                values[i] = val;
-            }
-            o.vals = values;
+            o.val2 = val;
+            o.val3 = val;
+            o.val4 = val;
+            o.val5 = val;
         }
 
         public static FOperation<Signal> Normalize(
@@ -106,12 +103,10 @@ namespace Microsoft.StreamProcessing
                 {
                     o.ts = t;
                     o.val = val;
-                    float[] values = new float [size];
-                    for (int i =0; i<size; i++)
-                    {
-                        values[i] = val;
-                    }
-                    o.vals = values;
+                    o.val2 = val;
+                    o.val3 = val;
+                    o.val4 = val;
+                    o.val5 = val;
                 }
             }
 
@@ -151,12 +146,11 @@ namespace Microsoft.StreamProcessing
                 o.ts = t;
                 o.val = s.avg;
                 float val = s.avg;
-                float[] values = new float [size];
-                for (int i =0; i<size; i++)
-                {
-                    values[i] = val;
-                }
-                o.vals = values;
+                o.val = val;
+                o.val2 = val;
+                o.val3 = val;
+                o.val4 = val;
+                o.val5 = val;
             }
         }
 
