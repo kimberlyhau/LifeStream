@@ -148,8 +148,9 @@ namespace LifeStream
             Func<IStreamable<Empty, Signal>> data = () =>
             {
                 return new TestObs("test", start, duration, freq)
-                        .Select(e => e.Payload)
-                        .ToTemporalStreamable(e => e.ts, e => e.ts + period)
+                        //.Select(e => e.Payload)
+                        //.ToTemporalStreamable(e => e.ts, e => e.ts + period)
+                        .ToStreamable()
                         .Cache()
                     ;
             };

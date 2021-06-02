@@ -27,12 +27,13 @@ namespace Microsoft.StreamProcessing
                         .ShiftEventLifetime(1)
                         .Join(s
                                 .AlterEventDuration(1),
-                            (l, r) => new {st = l.ts, sv = l.val, et = r.ts, ev = r.val}))
+                            (l, r) => new {st = l.val, sv = l.val, et = r.val, ev = r.val}))
                     .AlterEventLifetime(t => t - iperiod, iperiod)
                     .Chop(offset, operiod)
                     .HoppingWindowLifetime(1, operiod)
                     .AlterEventDuration(operiod)
-                    .Select((t, e) => new Signal(t, ((e.ev - e.sv) * (t - e.st) / (e.et - e.st) + e.sv)))
+                    .Select((t, e) => new Signal(((e.ev - e.sv) * (t - e.st) / (e.et - e.st) + e.sv)))
+                    //.Select((t, e) => new Signal(t, ((e.ev - e.sv) * (t - e.st) / (e.et - e.st) + e.sv)))
                 ;
         }
 
@@ -56,7 +57,8 @@ namespace Microsoft.StreamProcessing
                             (avg, std) => new {avg, std}
                         ),
                         (signal, agg) =>
-                            new Signal(signal.ts, (float) ((signal.val - agg.avg) / agg.std)),
+                            new Signal( (char) ((signal.val - agg.avg) / agg.std)),
+                            //new Signal(signal.ts, (float) ((signal.val - agg.avg) / agg.std)),
                         window, window, window - 1
                     )
                 ;
@@ -80,7 +82,8 @@ namespace Microsoft.StreamProcessing
         {
             return source
                     .Chop(offset, period, gap_tol)
-                    .Select((t, s) => (t == s.ts) ? s : new Signal(t, val))
+                    .Select((t, s) => new Signal( (char)val))
+                    //.Select((t, s) => (t == s.ts) ? s : new Signal(t, val))
                 ;
         }
 
@@ -99,6 +102,7 @@ namespace Microsoft.StreamProcessing
             long period,
             long gap_tol,
             long offset = 0
+            
         )
         {
             return source
@@ -107,11 +111,15 @@ namespace Microsoft.StreamProcessing
                         window, window, window-1)
                     .AlterEventDuration(period)
                     .Chop(offset, period, gap_tol)
+                    .Select((vs, s) => (s.signal.val == vs) ? s.signal: new Signal((char)s.avg))
+                    /*
                     .Select((vs, s) => new {s.signal, s.avg, new_ts = vs})
                     .Select(e =>
                         (e.signal.ts == e.new_ts)
                             ? e.signal
-                            : new Signal(e.new_ts, e.avg))
+                            : new Signal((char)e.avg))
+                            //: new Signal(e.new_ts, e.avg))
+                            */
                     .AlterEventDuration(period)
                 ;
         }
@@ -149,7 +157,8 @@ namespace Microsoft.StreamProcessing
             var new_val = bp.ProcessSamples(ival);
             for (int k = 0; k < new_val.Length; k++)
             {
-                output.Add(new Signal(input[k].ts, (float) new_val[k]));
+                output.Add(new Signal((char) new_val[k]));
+                //output.Add(new Signal(input[k].ts, (float) new_val[k]));
             }
 
             return output;
@@ -180,7 +189,7 @@ namespace Microsoft.StreamProcessing
                                 .Aggregate(w => new BatchAggregate<Signal>())
                                 .Select(input => FreqFilter(input, bp))
                                 .SelectMany(e => e),
-                            l => l.ts, r => r.ts,
+                            //l => l.ts, r => r.ts,
                             (l, r) => r
                         )
                     )

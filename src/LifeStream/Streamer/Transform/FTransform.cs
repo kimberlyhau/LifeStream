@@ -27,14 +27,10 @@ namespace Microsoft.StreamProcessing
 
         internal static void ResampleSelector(long t, SigPair p, out Signal o)
         {
-            o.ts = t;
-            float val = ((p.e.val - p.s.val) * (t - p.s.ts) / (p.e.ts - p.s.ts) + p.s.val);
-            o.val = val;
-            o.val2 = val;
-            o.val3 = val;
-            o.val4 = val;
-            o.val5 = val;
-            
+            //o.ts = t;
+            //o.val = ((p.e.val - p.s.val) * (t - p.s.ts) / (p.e.ts - p.s.ts) + p.s.val);
+            o.val = ((p.e.val - p.s.val) * (t - p.s.ts) / (p.e.ts - p.s.ts) + p.s.val);
+
         }
 
         public static FOperation<Signal> Resample(
@@ -55,13 +51,8 @@ namespace Microsoft.StreamProcessing
 
         internal static void NormalizeJoiner(Signal signal, (float avg, float std) agg, out Signal o)
         {
-            o.ts = signal.ts;
-            float val = ((signal.val - agg.avg) / agg.std);
-            o.val = val;
-            o.val2 = val;
-            o.val3 = val;
-            o.val4 = val;
-            o.val5 = val;
+            //o.ts = signal.ts;
+            o.val = (char)((signal.val - agg.avg) / agg.std);
         }
 
         public static FOperation<Signal> Normalize(
@@ -95,19 +86,17 @@ namespace Microsoft.StreamProcessing
         {
             void FillConstSelector(long t, Signal s, out Signal o)
             {
+                o.val = (char)val;
+                /*
                 if (t == s.ts)
                 {
                     o = s;
                 }
                 else
                 {
-                    o.ts = t;
-                    o.val = val;
-                    o.val2 = val;
-                    o.val3 = val;
-                    o.val4 = val;
-                    o.val5 = val;
-                }
+                    //o.ts = t;
+                    o.val = (char)val;
+                }*/
             }
 
             return source
@@ -137,21 +126,17 @@ namespace Microsoft.StreamProcessing
 
         internal static void FillMeanSelector(long t, SignalAvg s, out Signal o)
         {
+            o.val = (char)s.avg;
+            /*
             if (t == s.signal.ts)
             {
                 o = s.signal;
             }
             else
             {
-                o.ts = t;
-                o.val = s.avg;
-                float val = s.avg;
-                o.val = val;
-                o.val2 = val;
-                o.val3 = val;
-                o.val4 = val;
-                o.val5 = val;
-            }
+                //o.ts = t;
+                o.val = (char)s.avg;
+            }*/
         }
 
         public static FOperation<Signal> FillMean(
@@ -197,8 +182,9 @@ namespace Microsoft.StreamProcessing
                             var new_val = bp.ProcessSamples(ival);
                             for (int k = 0; k < new_val.Length; k++)
                             {
-                                output[off + k].ts = input[ioff + k].ts;
-                                output[off + k].val = (float) new_val[k];
+                                //output[off + k].ts = input[ioff + k].ts;
+                                //output[off + k].val = (float) new_val[k];
+                                output[off + k].val = (char) new_val[k];
                             }
                         }
                     )

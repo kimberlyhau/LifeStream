@@ -41,7 +41,8 @@ namespace Streamer.Ingest.Parser
                     var values = line.Split(',');
                     var t = ts_decoder(values[0]);
                     var v = val_decoder(values[1]);
-                    var sig = new Signal(t, v);
+                    //var sig = new Signal(t, v);
+                    var sig = new Signal((char)v);
                     signals.Add(StreamEvent.CreateStart(t, sig));
                 }
             }
