@@ -30,10 +30,6 @@ namespace Microsoft.StreamProcessing
             o.ts = t;
             float val = ((p.e.val - p.s.val) * (t - p.s.ts) / (p.e.ts - p.s.ts) + p.s.val);
             o.val = val;
-            o.val2 = val;
-            o.val3 = val;
-            o.val4 = val;
-            o.val5 = val;
             
         }
 
@@ -58,10 +54,6 @@ namespace Microsoft.StreamProcessing
             o.ts = signal.ts;
             float val = ((signal.val - agg.avg) / agg.std);
             o.val = val;
-            o.val2 = val;
-            o.val3 = val;
-            o.val4 = val;
-            o.val5 = val;
         }
 
         public static FOperation<Signal> Normalize(
@@ -103,10 +95,6 @@ namespace Microsoft.StreamProcessing
                 {
                     o.ts = t;
                     o.val = val;
-                    o.val2 = val;
-                    o.val3 = val;
-                    o.val4 = val;
-                    o.val5 = val;
                 }
             }
 
@@ -147,10 +135,6 @@ namespace Microsoft.StreamProcessing
                 o.val = s.avg;
                 float val = s.avg;
                 o.val = val;
-                o.val2 = val;
-                o.val3 = val;
-                o.val4 = val;
-                o.val5 = val;
             }
         }
 

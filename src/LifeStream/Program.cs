@@ -4,11 +4,13 @@ using System.Reactive.Linq;
 using Microsoft.StreamProcessing;
 using Microsoft.StreamProcessing.FOperationAPI;
 using Streamer.Ingest;
+using System.Collections.Generic;
 
 namespace LifeStream
 {
     class Program
     {
+        /*
         static double NonFuseTest<TResult>(Func<IStreamable<Empty, Signal>> data,
             Func<IStreamable<Empty, Signal>, IStreamable<Empty, TResult>> transform)
         {
@@ -83,7 +85,7 @@ namespace LifeStream
             o.s = l;
             o.e = r;
         }
-
+        
         static double MultiFuseTest(Func<IStreamable<Empty, Signal>> abp_data,
             Func<IStreamable<Empty, Signal>> ecg_data)
         {
@@ -124,7 +126,7 @@ namespace LifeStream
             sw.Stop();
             return sw.Elapsed.TotalSeconds;
         }
-
+        */
         static void Main(string[] args)
         {
             Config.DataBatchSize = 120000;
@@ -132,7 +134,7 @@ namespace LifeStream
             Config.StreamScheduler = StreamScheduler.OwnedThreads(2);
             Config.ForceRowBasedExecution = true;
 
-            int duration = 100000;
+            int duration = 60000;
             var testcase = "normalize"; //normalize, passfilter, fillconst, fillmean, resample, endtoend
             var engine = "trill";
             double time = 0;
@@ -144,7 +146,59 @@ namespace LifeStream
             const long gap_tol = window;
             long count = (duration * freq);
             Config.DataGranularity = window;
+            
+            var listA = new List<char>();                      
+            for (int i = 0; i < window; i++)
+            {
+                listA.Add((char)i);                                   
+            }
+            var streamA = listA                       
+                    .ToObservable()                            
+                    .ToTemporalStreamable(e => e, e => e + period)   
+                ;   
+            
+            var sw = new Stopwatch();
+            sw.Start();
+            var s_obs = streamA
+                .Select(e => (char)(e + 1));
 
+            s_obs
+                .ToStreamEventObservable()
+                .Wait();
+            sw.Stop();
+            
+            Console.WriteLine("Op:Select, Data: {0} million events, Time: {1:.###} sec",
+                count / 1000000f, sw.Elapsed.TotalSeconds);
+            
+            var sw2 = new Stopwatch();
+            sw2.Start();
+            var s_obs2 = streamA
+                .Where(e => e == 0);
+
+            s_obs2
+                .ToStreamEventObservable()
+                .Wait();
+            sw2.Stop();
+            
+            Console.WriteLine("Op:Where, Data: {0} million events, Time: {1:.###} sec",
+                count / 1000000f, sw2.Elapsed.TotalSeconds);
+            Config.StreamScheduler.Stop();
+            
+            var sw3 = new Stopwatch();
+            sw3.Start();
+            var s_obs3 = streamA
+                .Join(streamA, (l,r)=> l);
+
+            s_obs3
+                .ToStreamEventObservable()
+                .Wait();
+            sw3.Stop();
+            
+            Console.WriteLine("Op:Join, Data: {0} million events, Time: {1:.###} sec",
+                count / 1000000f, sw3.Elapsed.TotalSeconds);
+            Config.StreamScheduler.Stop();
+            
+            /*
             Func<IStreamable<Empty, Signal>> data = () =>
             {
                 return new TestObs("test", start, duration, freq)
@@ -173,7 +227,8 @@ namespace LifeStream
                         .ToTemporalStreamable(e => e.ts, e => e.ts + period)
                     ;
             };
-
+            */
+            /*
             switch (testcase + "_" + engine)
             {
                 case "normalize_trill":
@@ -251,10 +306,7 @@ namespace LifeStream
                     Console.Error.WriteLine("Unknown benchmark combination {0} on {1}", testcase, engine);
                     return;
             }
-
-            Console.WriteLine("Benchmark: {0}, Engine: {1}, Data: {2} million events, Time: {3:.###} sec",
-                testcase, engine, count / 1000000f, time);
-            Config.StreamScheduler.Stop();
+            */
         }
     }
 }
