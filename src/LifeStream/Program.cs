@@ -5,6 +5,7 @@ using Microsoft.StreamProcessing;
 using Microsoft.StreamProcessing.FOperationAPI;
 using Streamer.Ingest;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LifeStream
 {
@@ -127,6 +128,11 @@ namespace LifeStream
             return sw.Elapsed.TotalSeconds;
         }
         */
+        public struct TwoLongs
+        {
+            public long a;
+            public long b;
+        }
         static void Main(string[] args)
         {
             Config.DataBatchSize = 120000;
@@ -139,36 +145,94 @@ namespace LifeStream
             var engine = "trill";
             double time = 0;
 
-            const int start = 0;
+           // const int start = 0;
             const int freq = 500;
-            const int period = 1000 / freq;
+            //const int period = 1000 / freq;
             const long window = 60000;
-            const long gap_tol = window;
-            long count = (duration * freq);
+            //const long gap_tol = window;
+            //long count = (duration * freq);
             Config.DataGranularity = window;
+
+            //char
             
-            var listA = new List<char>();                      
-            for (int i = 0; i < window; i++)
+            var listA = new List<char>();
+            for (int j = 0; j < 500; j++)
             {
-                listA.Add((char)i);                                   
+                for (int i = 0; i < 60000; i++)
+                {
+                    listA.Add((char)i);
+                }
             }
-            var streamA = listA                       
-                    .ToObservable()                            
-                    .ToTemporalStreamable(e => e, e => e + period)   
-                ;   
+
+            var data = new {ts = 0, p = listA[0]};
+            var list = new[] {data}.ToList();
+            for (int i = 1; i < listA.Count; i++)
+            {
+                data = new {ts =i, p=listA[i]};
+                list.Add(data);
+            }
+
+            var streamA = list
+                    .ToObservable()
+                    .ToTemporalStreamable(e => e.ts, e => e.ts + 1)
+                    .Select(e => e.p)
+                ;
             
+            //int
+            /*
+            var listA = new List<int>();                       
+            for (int i = 0; i < 30000000; i++)
+            {
+                listA.Add(i);                               
+            }
+            
+            var streamA = listA                 
+                    .ToObservable()                         
+                    .ToTemporalStreamable(e => e, e => e + 1)  
+                ; 
+            */
+            //long
+            /*
+            var listA = new List<long>();                       
+            for (int i = 0; i < 30000000; i++)
+            {
+                listA.Add(i);                               
+            }
+            
+            var streamA = listA                 
+                    .ToObservable()                         
+                    .ToTemporalStreamable(e => e, e => (e + 1))  
+                ; 
+            */
+            //two longs
+            /*
+            var listA = new List<TwoLongs>();                       
+            for (int i = 0; i < 30000000; i++)
+            {
+                TwoLongs p;
+                p.a = i;
+                p.b = i;
+                listA.Add(p);                               
+            }
+            
+            var streamA = listA                 
+                    .ToObservable()                         
+                    .ToTemporalStreamable(e => e.a, e => (e.a + 1))  
+                ; 
+            */
+            //ops
             var sw = new Stopwatch();
             sw.Start();
             var s_obs = streamA
-                .Select(e => (char)(e + 1));
+                .Select(e => e + 1);
 
             s_obs
                 .ToStreamEventObservable()
                 .Wait();
             sw.Stop();
             
-            Console.WriteLine("Op:Select, Data: {0} million events, Time: {1:.###} sec",
-                count / 1000000f, sw.Elapsed.TotalSeconds);
+            Console.WriteLine("Op:Select,  Time: {0:.###} sec",
+                sw.Elapsed.TotalSeconds);
             
             var sw2 = new Stopwatch();
             sw2.Start();
@@ -180,8 +244,8 @@ namespace LifeStream
                 .Wait();
             sw2.Stop();
             
-            Console.WriteLine("Op:Where, Data: {0} million events, Time: {1:.###} sec",
-                count / 1000000f, sw2.Elapsed.TotalSeconds);
+            Console.WriteLine("Op:Where,  Time: {0:.###} sec",
+                sw2.Elapsed.TotalSeconds);
             Config.StreamScheduler.Stop();
             
             var sw3 = new Stopwatch();
@@ -194,8 +258,22 @@ namespace LifeStream
                 .Wait();
             sw3.Stop();
             
-            Console.WriteLine("Op:Join, Data: {0} million events, Time: {1:.###} sec",
-                count / 1000000f, sw3.Elapsed.TotalSeconds);
+            Console.WriteLine("Op:Join,  Time: {0:.###} sec",
+                sw3.Elapsed.TotalSeconds);
+            
+            var sw4 = new Stopwatch();
+            sw4.Start();
+            var s_obs4 = streamA
+                .Aggregate(e=>e.Count());
+
+            s_obs4
+                .ToStreamEventObservable()
+                .Wait();
+            sw4.Stop();
+            
+            Console.WriteLine("Op:Aggregate,  Time: {0:.###} sec",
+                sw4.Elapsed.TotalSeconds);
+            
             Config.StreamScheduler.Stop();
             
             /*
