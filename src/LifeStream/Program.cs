@@ -11,7 +11,7 @@ namespace LifeStream
 {
     class Program
     {
-        /*
+        
         static double NonFuseTest<TResult>(Func<IStreamable<Empty, Signal>> data,
             Func<IStreamable<Empty, Signal>, IStreamable<Empty, TResult>> transform)
         {
@@ -127,34 +127,23 @@ namespace LifeStream
             sw.Stop();
             return sw.Elapsed.TotalSeconds;
         }
-        */
+        
         public struct TwoLongs
         {
             public long a;
             public long b;
         }
-        static void Main(string[] args)
+
+        static void ChangingTypes()
         {
             Config.DataBatchSize = 120000;
             Config.FuseFactor = 1;
             Config.StreamScheduler = StreamScheduler.OwnedThreads(2);
             Config.ForceRowBasedExecution = true;
 
-            int duration = 60000;
-            var testcase = "normalize"; //normalize, passfilter, fillconst, fillmean, resample, endtoend
-            var engine = "trill";
-            double time = 0;
-
-           // const int start = 0;
-            const int freq = 500;
-            //const int period = 1000 / freq;
-            const long window = 60000;
-            //const long gap_tol = window;
-            //long count = (duration * freq);
-            Config.DataGranularity = window;
 
             //char
-            
+            /*
             var listA = new List<char>();
             for (int j = 0; j < 500; j++)
             {
@@ -176,12 +165,15 @@ namespace LifeStream
                     .ToObservable()
                     .ToTemporalStreamable(e => e.ts, e => e.ts + 1)
                     .Select(e => e.p)
+                    .Cache()
                 ;
-            
+            */
             //int
+            //var listA = new List<int>();   
+            //long
+            //var listA = new List<long>();  
             /*
-            var listA = new List<int>();                       
-            for (int i = 0; i < 30000000; i++)
+            for (int i = 0; i < 30; i++)
             {
                 listA.Add(i);                               
             }
@@ -189,27 +181,17 @@ namespace LifeStream
             var streamA = listA                 
                     .ToObservable()                         
                     .ToTemporalStreamable(e => e, e => e + 1)  
+                    .Cache()
                 ; 
             */
-            //long
-            /*
-            var listA = new List<long>();                       
-            for (int i = 0; i < 30000000; i++)
-            {
-                listA.Add(i);                               
-            }
             
-            var streamA = listA                 
-                    .ToObservable()                         
-                    .ToTemporalStreamable(e => e, e => (e + 1))  
-                ; 
-            */
             //two longs
-            /*
+            
             var listA = new List<TwoLongs>();                       
-            for (int i = 0; i < 30000000; i++)
+            for (int i = 0; i < 300; i++)
             {
                 TwoLongs p;
+                
                 p.a = i;
                 p.b = i;
                 listA.Add(p);                               
@@ -218,9 +200,11 @@ namespace LifeStream
             var streamA = listA                 
                     .ToObservable()                         
                     .ToTemporalStreamable(e => e.a, e => (e.a + 1))  
+                    .Cache()
                 ; 
-            */
+            
             //ops
+            /*
             var sw = new Stopwatch();
             sw.Start();
             var s_obs = streamA
@@ -260,23 +244,50 @@ namespace LifeStream
             
             Console.WriteLine("Op:Join,  Time: {0:.###} sec",
                 sw3.Elapsed.TotalSeconds);
-            
+            */
             var sw4 = new Stopwatch();
             sw4.Start();
             var s_obs4 = streamA
-                .Aggregate(e=>e.Count());
+                .TumblingWindowLifetime(10)
+                .Aggregate(w=> w.Count());
 
             s_obs4
                 .ToStreamEventObservable()
                 .Wait();
             sw4.Stop();
-            
+            s_obs4
+                .ToStreamEventObservable()                      // Convert back to Observable (of StreamEvents)
+                .Where(e => e.IsData)                           // Only pick data events from the stream
+                .ForEach(e => { Console.WriteLine(e); })        // Print the events to the console
+                ;
             Console.WriteLine("Op:Aggregate,  Time: {0:.###} sec",
                 sw4.Elapsed.TotalSeconds);
             
             Config.StreamScheduler.Stop();
+        }
+
+        static void BenchMarks(int dur, string eng , string test )
+        {
+            Config.DataBatchSize = 120000;
+            Config.FuseFactor = 1;
+            Config.StreamScheduler = StreamScheduler.OwnedThreads(2);
+            Config.ForceRowBasedExecution = true;
+
+            int duration = dur;
+            var testcase = test; //normalize, passfilter, fillconst, fillmean, resample, endtoend
+            var engine = eng;
+            double time = 0;
+
+            const int start = 0;
+            const int freq = 500;
+            const int period = 1000 / freq;
+            const long window = 60000;
+            const long gap_tol = window;
+            long count = (duration * freq);
+            Config.DataGranularity = window;
+
             
-            /*
+            
             Func<IStreamable<Empty, Signal>> data = () =>
             {
                 return new TestObs("test", start, duration, freq)
@@ -305,8 +316,8 @@ namespace LifeStream
                         .ToTemporalStreamable(e => e.ts, e => e.ts + period)
                     ;
             };
-            */
-            /*
+            
+            
             switch (testcase + "_" + engine)
             {
                 case "normalize_trill":
@@ -384,7 +395,12 @@ namespace LifeStream
                     Console.Error.WriteLine("Unknown benchmark combination {0} on {1}", testcase, engine);
                     return;
             }
-            */
+            Config.StreamScheduler.Stop();
+        }
+        static void Main(string[] args)
+        {
+            
+            ChangingTypes();
         }
     }
 }
