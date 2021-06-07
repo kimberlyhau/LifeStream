@@ -143,7 +143,7 @@ namespace LifeStream
 
 
             //char
-            /*
+            
             var listA = new List<char>();
             for (int j = 0; j < 500; j++)
             {
@@ -167,7 +167,7 @@ namespace LifeStream
                     .Select(e => e.p)
                     .Cache()
                 ;
-            */
+            
             //int
             //var listA = new List<int>();   
             //long
@@ -186,7 +186,7 @@ namespace LifeStream
             */
             
             //two longs
-            
+            /*
             var listA = new List<TwoLongs>();                       
             for (int i = 0; i < 30000000; i++)
             {
@@ -202,9 +202,9 @@ namespace LifeStream
                     .ToTemporalStreamable(e => e.a, e => (e.a + 1))  
                     .Cache()
                 ; 
-            
+            */
             //ops
-            /*
+            
             var sw = new Stopwatch();
             sw.Start();
             var s_obs = streamA
@@ -230,7 +230,6 @@ namespace LifeStream
             
             Console.WriteLine("Op:Where,  Time: {0:.###} sec",
                 sw2.Elapsed.TotalSeconds);
-            Config.StreamScheduler.Stop();
             
             var sw3 = new Stopwatch();
             sw3.Start();
@@ -244,7 +243,7 @@ namespace LifeStream
             
             Console.WriteLine("Op:Join,  Time: {0:.###} sec",
                 sw3.Elapsed.TotalSeconds);
-            */
+            
             var sw4 = new Stopwatch();
             sw4.Start();
             var s_obs4 = streamA
@@ -255,11 +254,6 @@ namespace LifeStream
                 .ToStreamEventObservable()
                 .Wait();
             sw4.Stop();
-            s_obs4
-                .ToStreamEventObservable()                      // Convert back to Observable (of StreamEvents)
-                .Where(e => e.IsData)                           // Only pick data events from the stream
-                .ForEach(e => { Console.WriteLine(e); })        // Print the events to the console
-                ;
             Console.WriteLine("Op:Aggregate,  Time: {0:.###} sec",
                 sw4.Elapsed.TotalSeconds);
             
