@@ -173,7 +173,7 @@ namespace LifeStream
             //long
             //var listA = new List<long>();  
             /*
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 30000000; i++)
             {
                 listA.Add(i);                               
             }
@@ -188,7 +188,7 @@ namespace LifeStream
             //two longs
             
             var listA = new List<TwoLongs>();                       
-            for (int i = 0; i < 300; i++)
+            for (int i = 0; i < 30000000; i++)
             {
                 TwoLongs p;
                 
@@ -248,7 +248,7 @@ namespace LifeStream
             var sw4 = new Stopwatch();
             sw4.Start();
             var s_obs4 = streamA
-                .TumblingWindowLifetime(10)
+                .TumblingWindowLifetime(10000)
                 .Aggregate(w=> w.Count());
 
             s_obs4
