@@ -127,88 +127,283 @@ namespace LifeStream
             sw.Stop();
             return sw.Elapsed.TotalSeconds;
         }
-        
-        public struct TwoLongs
+
+        public struct TwoStructs
         {
+            public TwoStructs(Longs val)
+            {
+                a = val;
+                b = val;
+            }
+            public Longs a;
+            public Longs b;
+        }
+        
+        public struct Longs
+        {
+            public Longs(long val)
+            {
+                a = val;
+                b = val;
+                c = val;
+                d = val;
+                
+                e = val;
+                f = val;
+                g = val;
+                h = val;
+                
+                i = val;
+                j = val;
+                k = val;
+                l = val;
+                
+                m = val;
+                n = val;
+                o = val;
+                p = val;
+                
+                q = val;
+                r = val;
+                s = val;
+                t = val;
+                
+                u = val;
+                v = val;
+                w = val;
+                x = val;
+                
+                a1 = val;
+                b1 = val;
+                c1 = val;
+                d1 = val;
+                
+                e1 = val;
+                f1 = val;
+                g1 = val;
+                h1 = val;
+                
+                i1 = val;
+                j1 = val;
+                k1 = val;
+                l1 = val;
+                
+                m1 = val;
+                n1 = val;
+                o1 = val;
+                p1 = val;
+                
+                q1 = val;
+                r1 = val;
+                s1 = val;
+                t1 = val;
+                
+                u1 = val;
+                v1 = val;
+                w1 = val;
+                x1 = val;
+                
+                a2 = val;
+                b2 = val;
+                c2 = val;
+                d2 = val;
+                
+                e2 = val;
+                f2 = val;
+                g2 = val;
+                h2 = val;
+                
+                i2 = val;
+                j2 = val;
+                k2 = val;
+                l2 = val;
+                
+                m2 = val;
+                n2 = val;
+                o2 = val;
+                p2 = val;
+
+            }
             public long a;
             public long b;
+            public long c;
+            public long d;
+
+            public long e;
+            public long f;
+            public long g;
+            public long h;
+            
+            public long i;
+            public long j;
+            public long k;
+            public long l;
+
+            public long m;
+            public long n;
+            public long o;
+            public long p;
+            
+            public long q;
+            public long r;
+            public long s;
+            public long t;
+
+            public long u;
+            public long v;
+            public long w;
+            public long x;
+            
+            public long a1;
+            public long b1;
+            public long c1;
+            public long d1;
+            
+            public long e1;
+            public long f1;
+            public long g1;
+            public long h1;
+            
+            public long i1;
+            public long j1;
+            public long k1;
+            public long l1;
+            
+            public long m1;
+            public long n1;
+            public long o1;
+            public long p1;
+            
+            public long q1;
+            public long r1;
+            public long s1;
+            public long t1;
+
+            public long u1;
+            public long v1;
+            public long w1;
+            public long x1;
+            
+            public long a2;
+            public long b2;
+            public long c2;
+            public long d2;
+            
+            public long e2;
+            public long f2;
+            public long g2;
+            public long h2;
+            
+            public long i2;
+            public long j2;
+            public long k2;
+            public long l2;
+            
+            public long m2;
+            public long n2;
+            public long o2;
+            public long p2;
+
         }
 
-        static void ChangingTypes()
+        static void ChangingTypes(string test)
         {
             Config.DataBatchSize = 120000;
             Config.FuseFactor = 1;
             Config.StreamScheduler = StreamScheduler.OwnedThreads(2);
             Config.ForceRowBasedExecution = true;
-
-
-            //char
-            
-            var listA = new List<char>();
-            for (int j = 0; j < 500; j++)
+            StreamCache<Empty, int> stream;
+            /*
+            switch (test)
             {
-                for (int i = 0; i < 60000; i++)
-                {
-                    listA.Add((char)i);
-                }
+                case "char":
+                    var listA = new List<char>();
+                    for (int j = 0; j < 500; j++)
+                    {
+                        for (int i = 0; i < 60000; i++)
+                        {
+                            listA.Add((char) i);
+                        }
+                    }
+
+                    var data = new {ts = 0, p = listA[0]};
+                    var list = new[] {data}.ToList();
+                    for (int i = 1; i < listA.Count; i++)
+                    {
+                        data = new {ts = i, p = listA[i]};
+                        list.Add(data);
+                    }
+                    //StreamCache<Empty, int> streamA;
+                    var streamA = list
+                        .ToObservable()
+                        .ToTemporalStreamable(e => e.ts, e => e.ts + 1)
+                        .Select(e => e.p)
+                        .Cache();
+                    break;
+                case "int":
+                    var listB = new List<int>();
+                    for (int i = 0; i < 30000000; i++)
+                    {
+                        listB.Add(i);
+                    }
+
+                    var streamB = listB
+                        .ToObservable()
+                        .ToTemporalStreamable(e => e, e => e + 1)
+                        .Cache();
+                    break;
+                case "long":
+                    var listC = new List<long>();
+                    for (int i = 0; i < 30000000; i++)
+                    {
+                        listC.Add(i);
+                    }
+
+                    var streamC = listC
+                            .ToObservable()
+                            .ToTemporalStreamable(e => e, e => e + 1)
+                            .Cache()
+                        ;
+                    break;
+                case "longs":
+                    var listD = new List<Longs>();
+                    for (int i = 0; i < 30000000; i++)
+                    {
+                        Longs p = new Longs(i);
+
+                        listD.Add(p);
+                    }
+
+                    var streamD = listD
+                            .ToObservable()
+                            .ToTemporalStreamable(e => e.a, e => (e.a + 1))
+                            .Cache()
+                        ;
+                    break;
+                default:
+                    Console.Error.WriteLine("no");
+                    return;
+            }
+            */
+            var listD = new List<TwoStructs>();
+            for (int i = 0; i < 30000000; i++)
+            {
+                Longs p = new Longs(i);
+                TwoStructs q = new TwoStructs(p);
+                listD.Add(q);
             }
 
-            var data = new {ts = 0, p = listA[0]};
-            var list = new[] {data}.ToList();
-            for (int i = 1; i < listA.Count; i++)
-            {
-                data = new {ts =i, p=listA[i]};
-                list.Add(data);
-            }
-
-            var streamA = list
+            var streamA = listD
                     .ToObservable()
-                    .ToTemporalStreamable(e => e.ts, e => e.ts + 1)
-                    .Select(e => e.p)
+                    .ToTemporalStreamable(e => e.a.b, e => (e.a.b + 1))
                     .Cache()
                 ;
-            
-            //int
-            //var listA = new List<int>();   
-            //long
-            //var listA = new List<long>();  
-            /*
-            for (int i = 0; i < 30000000; i++)
-            {
-                listA.Add(i);                               
-            }
-            
-            var streamA = listA                 
-                    .ToObservable()                         
-                    .ToTemporalStreamable(e => e, e => e + 1)  
-                    .Cache()
-                ; 
-            */
-            
-            //two longs
-            /*
-            var listA = new List<TwoLongs>();                       
-            for (int i = 0; i < 30000000; i++)
-            {
-                TwoLongs p;
-                
-                p.a = i;
-                p.b = i;
-                listA.Add(p);                               
-            }
-            
-            var streamA = listA                 
-                    .ToObservable()                         
-                    .ToTemporalStreamable(e => e.a, e => (e.a + 1))  
-                    .Cache()
-                ; 
-            */
             //ops
             
             var sw = new Stopwatch();
             sw.Start();
             var s_obs = streamA
-                .Select(e => e + 1);
+                .Select(e => e.a.b + 1);
 
             s_obs
                 .ToStreamEventObservable()
@@ -221,7 +416,7 @@ namespace LifeStream
             var sw2 = new Stopwatch();
             sw2.Start();
             var s_obs2 = streamA
-                .Where(e => e == 0);
+                .Where(e => e.a.b == 0);
 
             s_obs2
                 .ToStreamEventObservable()
@@ -247,7 +442,7 @@ namespace LifeStream
             var sw4 = new Stopwatch();
             sw4.Start();
             var s_obs4 = streamA
-                .TumblingWindowLifetime(10000)
+                .TumblingWindowLifetime(100000)
                 .Aggregate(w=> w.Count());
 
             s_obs4
@@ -393,8 +588,7 @@ namespace LifeStream
         }
         static void Main(string[] args)
         {
-            
-            ChangingTypes();
+            ChangingTypes("longs");
         }
     }
 }
