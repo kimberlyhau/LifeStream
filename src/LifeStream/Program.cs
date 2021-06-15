@@ -586,9 +586,35 @@ namespace LifeStream
             }
             Config.StreamScheduler.Stop();
         }
+        public class Payload
+        {
+            private byte[] data;
+
+            public Payload (int size, byte value)
+            {
+                data = new byte[size];
+                for (int i = 0; i < size; i++)
+                {
+                    data[i] = value;
+                }
+            }
+            
+        }
+
+        public void Aggregate_Bench(stream)
+        {
+            var result = 
+        }
+        public void Bench(int data_size, int payload_size)
+        {
+            
+        }
+        
         static void Main(string[] args)
         {
-            ChangingTypes("longs");
+            int data_size = 30000000;
+            int payload_size = 1;
+            Bench(data_size, payload_size);
         }
     }
 }
