@@ -345,7 +345,7 @@ namespace LifeStream
             var list = new List<Tuple<int, Payload>>();
             for (int i = 0; i < data_size; i++)
             {
-                Payload p = new Payload(1, 0);
+                Payload p = new Payload(payload_size, 0);
                 list.Add(Tuple.Create(i, p));
             }
 
