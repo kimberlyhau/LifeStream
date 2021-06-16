@@ -128,333 +128,6 @@ namespace LifeStream
             return sw.Elapsed.TotalSeconds;
         }
 
-        public struct TwoStructs
-        {
-            public TwoStructs(Longs val)
-            {
-                a = val;
-                b = val;
-            }
-            public Longs a;
-            public Longs b;
-        }
-        
-        public struct Longs
-        {
-            public Longs(long val)
-            {
-                a = val;
-                b = val;
-                c = val;
-                d = val;
-                
-                e = val;
-                f = val;
-                g = val;
-                h = val;
-                
-                i = val;
-                j = val;
-                k = val;
-                l = val;
-                
-                m = val;
-                n = val;
-                o = val;
-                p = val;
-                
-                q = val;
-                r = val;
-                s = val;
-                t = val;
-                
-                u = val;
-                v = val;
-                w = val;
-                x = val;
-                
-                a1 = val;
-                b1 = val;
-                c1 = val;
-                d1 = val;
-                
-                e1 = val;
-                f1 = val;
-                g1 = val;
-                h1 = val;
-                
-                i1 = val;
-                j1 = val;
-                k1 = val;
-                l1 = val;
-                
-                m1 = val;
-                n1 = val;
-                o1 = val;
-                p1 = val;
-                
-                q1 = val;
-                r1 = val;
-                s1 = val;
-                t1 = val;
-                
-                u1 = val;
-                v1 = val;
-                w1 = val;
-                x1 = val;
-                
-                a2 = val;
-                b2 = val;
-                c2 = val;
-                d2 = val;
-                
-                e2 = val;
-                f2 = val;
-                g2 = val;
-                h2 = val;
-                
-                i2 = val;
-                j2 = val;
-                k2 = val;
-                l2 = val;
-                
-                m2 = val;
-                n2 = val;
-                o2 = val;
-                p2 = val;
-
-            }
-            public long a;
-            public long b;
-            public long c;
-            public long d;
-
-            public long e;
-            public long f;
-            public long g;
-            public long h;
-            
-            public long i;
-            public long j;
-            public long k;
-            public long l;
-
-            public long m;
-            public long n;
-            public long o;
-            public long p;
-            
-            public long q;
-            public long r;
-            public long s;
-            public long t;
-
-            public long u;
-            public long v;
-            public long w;
-            public long x;
-            
-            public long a1;
-            public long b1;
-            public long c1;
-            public long d1;
-            
-            public long e1;
-            public long f1;
-            public long g1;
-            public long h1;
-            
-            public long i1;
-            public long j1;
-            public long k1;
-            public long l1;
-            
-            public long m1;
-            public long n1;
-            public long o1;
-            public long p1;
-            
-            public long q1;
-            public long r1;
-            public long s1;
-            public long t1;
-
-            public long u1;
-            public long v1;
-            public long w1;
-            public long x1;
-            
-            public long a2;
-            public long b2;
-            public long c2;
-            public long d2;
-            
-            public long e2;
-            public long f2;
-            public long g2;
-            public long h2;
-            
-            public long i2;
-            public long j2;
-            public long k2;
-            public long l2;
-            
-            public long m2;
-            public long n2;
-            public long o2;
-            public long p2;
-
-        }
-
-        static void ChangingTypes(string test)
-        {
-            Config.DataBatchSize = 120000;
-            Config.FuseFactor = 1;
-            Config.StreamScheduler = StreamScheduler.OwnedThreads(2);
-            Config.ForceRowBasedExecution = true;
-            StreamCache<Empty, int> stream;
-            /*
-            switch (test)
-            {
-                case "char":
-                    var listA = new List<char>();
-                    for (int j = 0; j < 500; j++)
-                    {
-                        for (int i = 0; i < 60000; i++)
-                        {
-                            listA.Add((char) i);
-                        }
-                    }
-
-                    var data = new {ts = 0, p = listA[0]};
-                    var list = new[] {data}.ToList();
-                    for (int i = 1; i < listA.Count; i++)
-                    {
-                        data = new {ts = i, p = listA[i]};
-                        list.Add(data);
-                    }
-                    //StreamCache<Empty, int> streamA;
-                    var streamA = list
-                        .ToObservable()
-                        .ToTemporalStreamable(e => e.ts, e => e.ts + 1)
-                        .Select(e => e.p)
-                        .Cache();
-                    break;
-                case "int":
-                    var listB = new List<int>();
-                    for (int i = 0; i < 30000000; i++)
-                    {
-                        listB.Add(i);
-                    }
-
-                    var streamB = listB
-                        .ToObservable()
-                        .ToTemporalStreamable(e => e, e => e + 1)
-                        .Cache();
-                    break;
-                case "long":
-                    var listC = new List<long>();
-                    for (int i = 0; i < 30000000; i++)
-                    {
-                        listC.Add(i);
-                    }
-
-                    var streamC = listC
-                            .ToObservable()
-                            .ToTemporalStreamable(e => e, e => e + 1)
-                            .Cache()
-                        ;
-                    break;
-                case "longs":
-                    var listD = new List<Longs>();
-                    for (int i = 0; i < 30000000; i++)
-                    {
-                        Longs p = new Longs(i);
-
-                        listD.Add(p);
-                    }
-
-                    var streamD = listD
-                            .ToObservable()
-                            .ToTemporalStreamable(e => e.a, e => (e.a + 1))
-                            .Cache()
-                        ;
-                    break;
-                default:
-                    Console.Error.WriteLine("no");
-                    return;
-            }
-            */
-            var listD = new List<TwoStructs>();
-            for (int i = 0; i < 30000000; i++)
-            {
-                Longs p = new Longs(i);
-                TwoStructs q = new TwoStructs(p);
-                listD.Add(q);
-            }
-
-            var streamA = listD
-                    .ToObservable()
-                    .ToTemporalStreamable(e => e.a.b, e => (e.a.b + 1))
-                    .Cache()
-                ;
-            //ops
-            
-            var sw = new Stopwatch();
-            sw.Start();
-            var s_obs = streamA
-                .Select(e => e.a.b + 1);
-
-            s_obs
-                .ToStreamEventObservable()
-                .Wait();
-            sw.Stop();
-            
-            Console.WriteLine("Op:Select,  Time: {0:.###} sec",
-                sw.Elapsed.TotalSeconds);
-            
-            var sw2 = new Stopwatch();
-            sw2.Start();
-            var s_obs2 = streamA
-                .Where(e => e.a.b == 0);
-
-            s_obs2
-                .ToStreamEventObservable()
-                .Wait();
-            sw2.Stop();
-            
-            Console.WriteLine("Op:Where,  Time: {0:.###} sec",
-                sw2.Elapsed.TotalSeconds);
-            
-            var sw3 = new Stopwatch();
-            sw3.Start();
-            var s_obs3 = streamA
-                .Join(streamA, (l,r)=> l);
-
-            s_obs3
-                .ToStreamEventObservable()
-                .Wait();
-            sw3.Stop();
-            
-            Console.WriteLine("Op:Join,  Time: {0:.###} sec",
-                sw3.Elapsed.TotalSeconds);
-            
-            var sw4 = new Stopwatch();
-            sw4.Start();
-            var s_obs4 = streamA
-                .TumblingWindowLifetime(100000)
-                .Aggregate(w=> w.Count());
-
-            s_obs4
-                .ToStreamEventObservable()
-                .Wait();
-            sw4.Stop();
-            Console.WriteLine("Op:Aggregate,  Time: {0:.###} sec",
-                sw4.Elapsed.TotalSeconds);
-            
-            Config.StreamScheduler.Stop();
-        }
-
         static void BenchMarks(int dur, string eng , string test )
         {
             Config.DataBatchSize = 120000;
@@ -588,26 +261,145 @@ namespace LifeStream
         }
         public class Payload
         {
-            private byte[] data;
-
+            public byte[] data;
+            public int size;
             public Payload (int size, byte value)
             {
+                this.size = size;
                 data = new byte[size];
                 for (int i = 0; i < size; i++)
                 {
-                    data[i] = value;
+                    data[i] = (byte)value;
                 }
             }
             
         }
 
-        public void Aggregate_Bench(stream)
+        static Payload SelectOps(Payload p)
         {
-            var result = 
+            for (int i = 0; i < p.size; i++)
+            {
+                p.data[i] += 1;
+            }
+            return p;
         }
-        public void Bench(int data_size, int payload_size)
+        static IStreamable<Empty, Payload> Select_Bench(StreamCache<Empty, Payload>stream)
         {
+            var result = stream
+                .Select(e => SelectOps(e));
+            return result;
+        }
+
+        static Boolean WhereOps(Payload p)
+        {
+            long sum = 0;
+            for (int i = 0; i < p.size; i++)
+            {
+                sum += p.data[i];
+            }
+
+            return ((sum % 10) % 4) == 0;
+        }
+        static IStreamable<Empty, Payload> Where_Bench(StreamCache<Empty, Payload> stream)
+        {
+            var result = stream
+                .Where(e=> WhereOps(e));
+            return result;
+        }
+
+        static Payload JoinOps(Payload l, Payload r)
+        {
+            for (int i = 0; i < l.size; i++)
+            {
+                l.data[i] += r.data[i];
+            }
+            return l;
+        }
+        static IStreamable<Empty, Payload> Join_Bench(StreamCache<Empty, Payload> streamA, StreamCache<Empty,Payload> streamB)
+        {
+            var result = streamA
+                .Join(streamB, (l, r) => JoinOps(l, r));
+            return result;
+        }
+
+        static long AggOps(Payload p)
+        {
+            long sum = 0;
+            for (int i = 0; i < p.size; i++)
+            {
+                sum += p.data[i];
+            }
+
+            return sum;
+        }
+        static IStreamable<Empty, long> Agg_Bench(StreamCache<Empty, Payload> stream)
+        {
+            var result = stream
+                .TumblingWindowLifetime(10000)
+                .Aggregate(w => w.Sum(e=>AggOps(e)));
+            return result;
+        }
+
+        static List<Tuple<int, Payload>> Create_Payload(int data_size, int payload_size)
+        {
+            var list = new List<Tuple<int, Payload>>();
+            for (int i = 0; i < data_size; i++)
+            {
+                Payload p = new Payload(1, 0);
+                list.Add(Tuple.Create(i, p));
+            }
+
+            return list;
+        }
+
+        static StreamCache<Empty, Payload> Create_Stream(int data_size, int payload_size)
+        {
+            var stream = Create_Payload(data_size, payload_size)
+                    .ToObservable()
+                    .ToTemporalStreamable(e => e.Item1, e => e.Item1+1)
+                    .Select(e => e.Item2)
+                    .Cache()
+                ;
+            return stream;
+        }
+        
+        static void Bench(int data_size, int payload_size)
+        {
+
+            var stream = Create_Stream(data_size, payload_size);
+            var sw = new Stopwatch();
+            sw.Start();
+            var s_obs = Select_Bench(stream)
+                .Cache();
+            sw.Stop();
+            Console.WriteLine("Op:Select,  Time: {0:.###} sec",
+                sw.Elapsed.TotalSeconds);
             
+            var sw2 = new Stopwatch();
+            sw2.Start();
+            var s_obs2 = Where_Bench(stream)
+                .Cache();
+            sw2.Stop();
+            Console.WriteLine("Op:Where,  Time: {0:.###} sec",
+                sw2.Elapsed.TotalSeconds);
+            
+            var sw3 = new Stopwatch();
+            sw3.Start();
+            var s_obs3 = Join_Bench(stream, stream)
+                .Cache();
+            sw3.Stop();
+            Console.WriteLine("Op:Join,  Time: {0:.###} sec",
+                sw3.Elapsed.TotalSeconds);
+            
+            var sw4 = new Stopwatch();
+            sw4.Start();
+            var s_obs4 = Agg_Bench(stream)
+                .Cache();
+            sw4.Stop();
+            Console.WriteLine("Op:Agg,  Time: {0:.###} sec",
+                sw4.Elapsed.TotalSeconds);
+            
+            Config.StreamScheduler.Stop();
         }
         
         static void Main(string[] args)
